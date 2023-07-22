@@ -43,8 +43,21 @@ int main()
     getNameDay(gmt->tm_mday, gmt->tm_mon);
     printf("Today is %s's name day\n\n", name);
 
-    // TODO: Leap year check
-    int leapyear = 0;
+    // Leap year check
+    gmt->tm_year = gmt->tm_year + 1900;
+    int leapyear;
+    if (gmt->tm_year % 4 == 0)
+    {
+        leapyear = 1;
+    }
+    if (gmt->tm_year % 100 == 0)
+    {
+        leapyear = 0;
+    }
+    if (gmt->tm_year % 400 == 0)
+    {
+        leapyear = 1;
+    }
 
     // Time - tomorrow
     gmt->tm_mday = gmt->tm_mday + 1;
