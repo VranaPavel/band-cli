@@ -27,8 +27,8 @@ void get_name(char *file, int day, int month)
     rewind(fp);
 
     // Get data
-    char *allData = (char *)calloc(sz + 1, sizeof(char));
-    char *line = (char *)calloc(sz, sizeof(char));
+    char *allData = (char *)malloc((sz + 1) * sizeof(char));
+    char *line = (char *)malloc(sz * sizeof(char));
 
     while (fgets(line, sz * sizeof(char), fp))
     {
@@ -41,7 +41,7 @@ void get_name(char *file, int day, int month)
 
     // Make array of strings from string
     char *part = strtok(allData, ",");
-    char **allDataArr = (char **)calloc(sz, sizeof(char *));
+    char **allDataArr = (char **)malloc(sz * sizeof(char *));
     int LenghtOfArr = 0;
 
     while (part != NULL)
@@ -55,7 +55,7 @@ void get_name(char *file, int day, int month)
     LenghtOfArr = LenghtOfArr - 1;
 
     // Make three arrays (day, month, name)
-    char **dates = (char **)calloc(LenghtOfArr, sizeof(char *));
+    char **dates = (char **)malloc(LenghtOfArr * sizeof(char *));
     int k = 0;
     for (int i = 0; i <= LenghtOfArr; i = i + 2)
     {
@@ -63,9 +63,8 @@ void get_name(char *file, int day, int month)
         k++;
     }
 
-    int namesSize = sz - (k - 1) * 5 * sizeof(char);
+    char **names = (char **)malloc(sz - (k - 1) * 3 * sizeof(char));
     k = 0;
-    char **names = (char **)calloc(8, namesSize);
     for (int i = 1; i <= LenghtOfArr; i = i + 2)
     {
         names[k] = allDataArr[i];
@@ -74,13 +73,13 @@ void get_name(char *file, int day, int month)
     free(allDataArr);
 
     char *d[k * 2 * sizeof(char)];
-    char **m = (char **)calloc(k + 8, 2 * sizeof(char));
+    char **m = (char **)malloc(k * 2 * sizeof(char) * 4);
     for (int i = 0; i < k; i++)
     {
         d[i] = strtok(dates[i], "/");
         m[i] = strtok(NULL, "/");
     }
-    //free(dates);       //error free(): corrupted unsorted chunks
+    free(dates);
 
     int days[k * 2 * sizeof(int)];
     int months[k * 2 * sizeof(int)];
@@ -149,11 +148,11 @@ int main()
 
     // Name day - today
     get_name("namedays.csv", gmt->tm_mday, gmt->tm_mon);
-    printf("Today is %s's name day.\n", name);
+    printf("Today is %s's name day.\n\n", name);
 
     // Leap year check
     gmt->tm_year = gmt->tm_year + 1900;
-    int leapyear;
+    int leapyear = 0;
     if (gmt->tm_year % 4 == 0)
     {
         leapyear = 1;
@@ -214,8 +213,9 @@ int main()
         gmt->tm_mon = gmt->tm_mon - 11;
     }
 
-    // TODO: Print - Birthday tomorrow
-    /* getBirthday(day + 1, month);
+    // Birthday - tomorrow
+    name = NULL;
+    get_name("birthdays.csv", gmt->tm_mday + 1, gmt->tm_mon);
     if (name == NULL)
     {
         printf("Today isn't anyone you know's birthday.\n");
@@ -224,8 +224,9 @@ int main()
     {
         printf("Today is %s's birthday.\n", name);
     }
-    // Name day today
-    getNameDay(day + 1, month);
+    
+    // Name day - tomorrow
+    /* get_name("namedays.csv", gmt->tm_mday + 1, gmt->tm_mon);
     printf("Today is %s's name day\n\n", name); */
 
     return 0;
