@@ -125,23 +125,128 @@ void add_birthday()
 
     char name[50];
     printf("Enter name: ");
-    scanf("%49s", &name);
+    fgets(name, sizeof name, stdin);
+    replace_char(name, '\n', '\0');
 
     char date[6];
     printf("Enter date (in format day/month): ");
-    scanf("%5s", &date);
-
-    // Check date
-    int i = (date[3] - '0') * 10 + date[4] - '0';
-    int k = (date[0] - '0') * 10 + date[1] - '0';
-    
-    // TODO: check if date is correct
-    /* while (i > 12 || k > )
+    fgets(date, sizeof date, stdin);
+    for (int i = 0; i < strlen(date); i++)
     {
-        printf("Wrong date. Enter date (in format day/month): ");
-        scanf("%5s", &date);
-    } */
-    
-    fprintf(fp, "\n%s,%s", date, name);
+        if (date[i] == '\n')
+        {
+            date[i] = '\0';
+        }
+    }
+    printf("\n");
+
+    // Check date 
+    int slash;
+    int d;
+    int m;
+    for (int i = 0; i < strlen(date); i++)
+    {
+        if (date[i] == '/');
+        {
+            slash = i;
+        } 
+    }
+    if (slash == 1)
+    {
+        int d = date[0] - '0';
+        if (date[3] != '\0')
+        {
+            m = (date[2] - '0') * 10 + date[3] - '0';
+        }
+        else if (date[3] == '\0')
+        {
+            m = date[2] - '0';
+        }
+        else
+        {
+            printf("Error: bad input. You entered a date that doesn't exist.\n");
+            exit(1);
+        }
+    }
+    else if (slash == 2);
+    {
+        int d = (date[0] - '0') * 10 + date[1] - '0';
+        if (date[4] != '\0')
+        {
+            m = (date[3] - '0') * 10 + date[4] - '0';
+        }
+        else if (date[4] == '\0')
+        {
+            m = date[3] - '0';
+        }
+        else
+        {
+            printf("Error: bad input. You entered a date that doesn't exist.\n");
+            exit(1);
+        }
+    }
+
+    // Date checking and input sanitization while adding birthday
+    for (int i = 0; i < strlen(name); i++)
+    {
+        if (name[i] == ',' || name[i] == '/')
+        {
+            printf("Error: bad input. You entered a forbidden symbol.\n");
+            fclose(fp);
+            exit(1);
+        }
+    }
+     for (int i = 0; i < strlen(date); i++)
+    {
+        if (date[i] == ',')
+        {
+            printf("Error: bad input. You entered a forbidden symbol.\n");
+            fclose(fp);
+            exit(1);
+        }
+    }
+
+    for (int i = 1; i < 13; i = i + 2)
+    {
+        if (d > 31 && m == i)
+        {
+            printf("Error: bad input (wrong date). You entered a date that doesn't exist.\n");
+            fclose(fp);
+            exit(1);
+        }
+        if (i == 7)
+        {
+            i = i - 1;
+        }
+    }
+    for (int i = 4; i < 12; i = i + 2)
+    {
+        if (d > 30 && m == i)
+        {
+            printf("Error: bad input (wrong date). You entered a date that doesn't exist.\n");
+            fclose(fp);
+            exit(1);
+        }
+        if (i == 6)
+        {
+            i = i + 1;
+        }
+    }
+    if (d > 29 && m == 2)
+    {
+        printf("Error: bad input (wrong date). You entered a date that doesn't exist.\n");
+        fclose(fp);
+        exit(1);
+    }
+    if (m > 12)
+    {
+        printf("Error: bad input (wrong date). You entered a date that doesn't exist.\n");
+        fclose(fp);
+        exit(1);
+    }
+
+    fprintf(fp, "%s,%s", date, name);
+    fprintf(fp, "\n");
     fclose(fp);
+    printf("New birthday added succesfully.\n");
 }
