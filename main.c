@@ -34,16 +34,22 @@ int main(int argc, char *argv[])
     printf("Today is %d.%d.\n\n", gmt->tm_mday, gmt->tm_mon + 1);
 
     // Birthday - today
-    char *name = get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon);
+    char **name = NULL;
+    int num = 0;
+    name = get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon);
     if (name == NULL)
     {
         printf("Today isn't anyone you know's birthday.\n");
     }
     else
     {
-        printf("Today is %s's birthday.\n", name);
+        num = atoi(name[0]);
+        for (int i = 1; i <= num; i++)
+        {
+            printf("Today is %s's birthday.\n", name[i]);
+        }
+        free(name);
     }
-    free(name);
 
     // Name day - today
     name = get_name("data/namedays.csv", gmt->tm_mday, gmt->tm_mon);
@@ -53,7 +59,11 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Today is %s's name day.\n\n", name);
+        int num = atoi(name[0]);
+        for (int i = 1; i <= num; i++)
+        {
+            printf("Today is %s's name day.\n\n", name[i]);
+        }
     }
     free(name);
 
@@ -126,9 +136,12 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Tomorrow is %s's birthday.\n", name);
+        int num = atoi(name[0]);
+        for (int i = 1; i <= num; i++)
+        {
+            printf("Today is %s's name day.\n\n", name[i]);
+        }
     }
-    free(name);
 
     // Name day - tomorrow
     name = get_name("data/namedays.csv", gmt->tm_mday + 1, gmt->tm_mon);
@@ -138,8 +151,12 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Tomorrow is %s's name day\n\n", name);
-    }
+        int num = atoi(name[0]);
+        for (int i = 1; i <= num; i++)
+        {
+            printf("Today is %s's name day.\n\n", name[i]);
+        }
+    } 
     free(name);
 
     return 0;

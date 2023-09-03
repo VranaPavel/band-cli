@@ -3,7 +3,9 @@
 #include <string.h>
 #include "func.h"
 
-char *get_name(char *file, int day, int month)
+// TODO: Fix memory errors
+// TODO: Add some comments
+char **get_name(char *file, int day, int month)
 {
     FILE *fp;
     fp = fopen(file, "r");
@@ -53,7 +55,7 @@ char *get_name(char *file, int day, int month)
         k++;
     }
 
-    char **names = (char **)malloc(sz - (k - 1) * 3 * sizeof(char));
+    char **names = (char **)malloc((sz - (k - 1) * 3) * sizeof(char *));
     k = 0;
     for (int i = 1; i <= lenghtOfArr; i = i + 2)
     {
@@ -97,16 +99,30 @@ char *get_name(char *file, int day, int month)
     }
 
     // Get name by day and month
-    char *name = NULL;
+    char **name = (char **)malloc(sizeof(char *));
+
+    char b = '0';
+    name[0] = &b;
+
+    int a = 1;
     for (int i = 0; i < k; i++)
     {
         if (day == days[i] && month + 1 == months[i])
         {
-            name = strdup(names[i]);
-            break;    
+            name = (char **)realloc(name, sizeof(char *) * (a + 1));
+            name[a] = names[i];
+            a++;
         }
     }
-    
+    a--;
+    *name[0] = a + '0';
+
+    if (a == 0)
+    {
+        free(name);
+        name = NULL;
+    }
+
     fclose(fp);
     free(line);
     free(allDataArr);
@@ -140,16 +156,16 @@ void add_birthday()
     }
     printf("\n");
 
-    // Check date 
+    // Check date
     int slash;
     int d;
     int m;
     for (int i = 0; i < strlen(date); i++)
     {
-        if (date[i] == '/');
+        if (date[i] == '/')
         {
             slash = i;
-        } 
+        }
     }
     if (slash == 1)
     {
@@ -168,7 +184,7 @@ void add_birthday()
             exit(1);
         }
     }
-    else if (slash == 2);
+    else if (slash == 2)
     {
         int d = (date[0] - '0') * 10 + date[1] - '0';
         if (date[4] != '\0')
@@ -196,7 +212,7 @@ void add_birthday()
             exit(1);
         }
     }
-     for (int i = 0; i < strlen(date); i++)
+    for (int i = 0; i < strlen(date); i++)
     {
         if (date[i] == ',')
         {
@@ -249,4 +265,83 @@ void add_birthday()
     fprintf(fp, "\n");
     fclose(fp);
     printf("New birthday added succesfully.\n");
+}
+
+// WARNING: This function is not working properly
+// TODO: Finish this function
+void remove_name(char *string)
+{
+    FILE *fpr;
+    FILE *fpw;
+    fpr = fopen("data/birthdays.csv", "r");
+
+    fseek(fpr, 0L, SEEK_END);
+    int sz = ftell(fpr);
+    rewind(fpr);
+
+    if (sz == 0)
+    {
+        fclose(fpr);
+        exit(1);
+    }
+
+    // Get data
+    char *allData = (char *)malloc((sz + 1) * sizeof(char));
+    allData[0] = '\0';
+    char *line = (char *)malloc(sz * sizeof(char));
+
+    while (fgets(line, sz * sizeof(char), fpr))
+    {
+        strcat(allData, line);
+    }
+    fclose(fpr);
+    fpw = fopen("data/birthdays.csv", "W");
+
+    int k = 0;
+    int n = 1;
+    for (int i = 0; i < strlen(allData); i++)
+    {
+        if (allData[i] == ',' || allData[i] == '\n')
+        {
+            if (n == 0)
+            {
+                // Delete name from allData and write allData into file
+                k = i;
+                i--;
+                while (allData[i] != '\n')
+                {
+                    i--;
+                }
+
+                while (allData[i] != '\0')
+                {
+                    allData[i] = allData[k];
+                    i++;
+                    k++;
+                }
+                /* while (allData[i] == '')
+                {
+                } */
+
+                fprintf(fpw, "%s", allData);
+                break;
+            }
+            n = 0;
+            k = i + 1;
+            continue;
+        }
+
+        if (n == 1)
+        {
+            continue;
+        }
+
+        if (allData[i] != string[i - k])
+        {
+            n = 1;
+        }
+    }
+    // free(allData);
+    free(line);
+    fclose(fpw);
 }
