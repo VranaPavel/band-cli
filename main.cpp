@@ -39,11 +39,29 @@ int main(int argc, char *argv[])
     struct tm *gmt = gmtime(&now);
 
     // Welcome
-    printf("Welcome in the Band (Birthdays and name days) app.\n");
-    printf("Today is %d.%d.\n\n", gmt->tm_mday, gmt->tm_mon + 1);
+    cout << "Welcome in the Band (Birthdays and name days) app." << endl;
+    cout << "Today is " << gmt->tm_mday << "." << gmt->tm_mon + 1 << "." << endl << endl;
+    list<string> names;
 
-    get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon, 0, 0);
-    get_name("data/namedays.csv", gmt->tm_mday, gmt->tm_mon, 0, 1);
+    get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon, names);
+    if (names.empty())
+    {
+        cout << "Today isn't anyone you know's birthday." << endl;
+    }
+    for (const auto &element : names)
+    {
+        cout << "Today is " << element << "'s birthday." << endl;
+    }
+    names.clear();
+    get_name("data/namedays.csv", gmt->tm_mday, gmt->tm_mon, names);
+    if (names.empty())
+    {
+        cout << "Today isn't anyone you know's nameday." << endl;
+    }
+    for (const auto &element : names)
+    {
+        cout << "Today is " << element << "'s nameday." << endl;
+    }
     cout << endl;
 
     // Leap year check
@@ -105,7 +123,28 @@ int main(int argc, char *argv[])
         gmt->tm_mon = gmt->tm_mon - 11;
     }
 
-    get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon, 1, 0);
-    get_name("data/namedays.csv", gmt->tm_mday, gmt->tm_mon, 1, 1);
+    names.clear();
+    get_name("data/birthdays.csv", gmt->tm_mday, gmt->tm_mon, names);
+    if (names.empty())
+    {
+        cout << "Today isn't anyone you know's birthday." << endl;
+    }
+    for (const auto &element : names)
+    {
+        cout << "Tomorrow is " << element << "'s birthday." << endl;
+    }
+    names.clear();
+    get_name("data/namedays.csv", gmt->tm_mday, gmt->tm_mon, names);
+    if (names.empty())
+    {
+        cout << "Tomorrow isn't anyone you know's nameday." << endl;
+    }
+    for (const auto &element : names)
+    {
+        cout << "Tomorrow is " << element << "'s nameday." << endl;
+    }
+
+    add_birthday();
+
     return 0;
 }
