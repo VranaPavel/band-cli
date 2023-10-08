@@ -143,8 +143,5 @@ int main(int argc, char *argv[])
     {
         cout << "Tomorrow is " << element << "'s nameday." << endl;
     }
-
-    add_birthday();
-
     return 0;
 }
