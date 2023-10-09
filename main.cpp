@@ -13,11 +13,17 @@ int main(int argc, char *argv[])
         add_birthday();
         return 0;
     }
-    if (argc == 2 && strcmp(argv[1], "-h") == 0 || argv[1] == "--help")
+    else if (argc == 2 && strcmp(argv[1], "-r") == 0 || argv[1] == "--remove")
+    {
+        remove_birthday();
+        return 0;
+    }
+    else if (argc == 2 && strcmp(argv[1], "-h") == 0 || argv[1] == "--help")
     {
         cout << "Usage: band [OPTION]\n";
         cout << "Show birthdays and name days.\n\n";
         cout << "  -a, --add\t\tadd a birthday\n";
+        cout << "  -r, --remove\t\tremove a birthday\n";
         cout << "  -h, --help\t\tshow this help message and exit\n";
         return 0;
     }
@@ -26,14 +32,8 @@ int main(int argc, char *argv[])
         cout << "band: invalid option -- '" << argv[1] << "'" << endl;
         cout << "Try 'band --help' for more information." << endl;
         return 1;
-    }
-
-    cout << "You have entered " << argc << " arguments:"
-    << "\n";
- 
-    for (int i = 0; i < argc; ++i)
-        cout << argv[i] << "\n";
-
+    } 
+    
     // Time - today
     time_t now = time(NULL);
     struct tm *gmt = gmtime(&now);
